@@ -4,6 +4,8 @@
 
 #include <zmq.hpp>
 
+#include <boost/log/trivial.hpp>
+
 namespace {
 
 int main_pub(const char * address) {
@@ -46,6 +48,8 @@ int main_sub(const char * address) {
 }
 
 int main(int argc, const char ** argv) {
+    BOOST_LOG_TRIVIAL(info) << "Hello, world!";
+
     if (argc < 3) {
         std::cout << "Specify command: pub or sub and then zmq address\n";
         return 1;
