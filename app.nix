@@ -1,13 +1,17 @@
 { }:
 let
   src = import nix/sources.nix;
-  pkgs = import src.nixpkgs { };
 
-  customStdenv = pkgs.stdenv;
+  big_overlay = import "${src.nur-packages}/overlay.nix";
+  oneapi_overlay = import "${src.nur-packages}/overlays/intel-oneapi";
+
+  pkgs = import src.nixpkgs { overlays = [big_overlay oneapi_overlay]; };
+
+  customStdenv = pkgs.oneapiPackages_2021_3_1.stdenv;
 
   moldStdenv = pkgs.callPackage nix/mold_env.nix { stdenv = customStdenv; };
 
-  zeromq = pkgs.callPackage ./default.nix { inherit pkgs; };
+  zeromq = pkgs.zeromq; # pkgs.callPackage ./default.nix { inherit pkgs; };
 
   boost178 = let
     cp = nixFile: args:
@@ -28,7 +32,8 @@ let
 
 in pkgs.callPackage ./app {
   inherit zeromq;
-  stdenv = moldStdenv;
-  boost = boost178;
+  stdenv = customStdenv;
+  # stdenv = moldStdenv;
+  # boost = boost178;
 }
 

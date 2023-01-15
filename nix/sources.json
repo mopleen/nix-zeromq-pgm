@@ -10,5 +10,17 @@
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/1882c6b7368fd284ad01b0a5b5601ef136321292.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nur-packages": {
+        "branch": "master",
+        "description": null,
+        "homepage": "",
+        "owner": "dguibert",
+        "repo": "nur-packages",
+        "rev": "6cc6d6761e407f16ff5118194793d5791025f2e8",
+        "sha256": "1shmzlckpnlf7wzz80fa6gv339bq58hg24p0ll84a1sdq85sz1ij",
+        "type": "tarball",
+        "url": "https://github.com/dguibert/nur-packages/archive/6cc6d6761e407f16ff5118194793d5791025f2e8.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
