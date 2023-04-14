@@ -10,8 +10,18 @@ let
   zeromq = pkgs.callPackage ./default.nix { inherit pkgs; };
 
   boost178 = let
+    injectFlags = stdenv:
+      stdenv // {
+        mkDerivation = args:
+          stdenv.mkDerivation (args // {
+            NIX_CFLAGS_COMPILE = toString (args.NIX_CFLAGS_COMPILE or "")
+              + " -fno-gnu-unique -fwtfalexsuper";
+          });
+      };
+
     cp = nixFile: args:
       pkgs.callPackage nixFile (args // {
+        stdenv = injectFlags pkgs.stdenv;
         version = "1.78.0";
         src = boostSrc;
       });
@@ -28,7 +38,7 @@ let
 
 in pkgs.callPackage ./app {
   inherit zeromq;
-  stdenv = moldStdenv;
+  # stdenv = moldStdenv;
   boost = boost178;
 }
 
