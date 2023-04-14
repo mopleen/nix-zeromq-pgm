@@ -1,22 +1,25 @@
-{ callPackage, llvmPackages_latest, stdenv, runCommand, symlinkJoin, overrideCC
-, bintools }:
-let
-  mold = callPackage ./mold.nix { stdenv = llvmPackages_latest.stdenv; };
-
+{
+  stdenv,
+  runCommand,
+  symlinkJoin,
+  overrideCC,
+  bintools,
+  mold,
+}: let
   overrideBintoolsUnwrapped = bintools: bintools-unwrapped:
-    bintools.override ({
+    bintools.override {
       bintools = symlinkJoin {
         name = bintools-unwrapped.name;
-        paths = [ bintools-unwrapped bintools.passthru.bintools ];
+        paths = [bintools-unwrapped bintools.passthru.bintools];
       };
-    });
+    };
   overrideBintools = stdenv: bintools:
-    overrideCC stdenv (stdenv.cc.override { inherit bintools; });
-  prefix = if stdenv.hostPlatform != stdenv.targetPlatform then
-    "${stdenv.targetPlatform.config}-"
-  else
-    "";
-  moldBintoolsUnwrapped = runCommand "mold-bintools-${mold.version}" { } ''
+    overrideCC stdenv (stdenv.cc.override {inherit bintools;});
+  prefix =
+    if stdenv.hostPlatform != stdenv.targetPlatform
+    then "${stdenv.targetPlatform.config}-"
+    else "";
+  moldBintoolsUnwrapped = runCommand "mold-bintools-${mold.version}" {} ''
     mkdir -p $out/bin
     for prog in ${mold}/bin/*; do
       ln -s $prog $out/bin/${prefix}$(basename $prog)
@@ -25,4 +28,5 @@ let
   '';
   myBintools = overrideBintoolsUnwrapped bintools moldBintoolsUnwrapped;
   myStdenv = overrideBintools stdenv myBintools;
-in myStdenv
+in
+  myStdenv
